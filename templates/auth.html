@@ -5,172 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JEmail - Авторизація</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #0e1621; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        
-        .auth-container { background-color: #17212b; width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; border: 1px solid #101921; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: center; }
-        h2 { color: #5288c1; margin-bottom: 10px; font-size: 24px; }
-        .subtitle { color: #7f91a4; font-size: 14px; margin-bottom: 25px; }
-        
-        .form-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; color: #7f91a4; font-size: 13px; margin-bottom: 5px; padding-left: 5px; }
-        input { width: 100%; background-color: #24313f; border: 1px solid #101921; padding: 12px; border-radius: 8px; color: #fff; outline: none; font-size: 15px; transition: 0.2s; }
-        input:focus { border-color: #5288c1; }
-        
-        .btn { width: 100%; background-color: #2b5278; border: none; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 15px; transition: 0.2s; }
-        .btn:hover { background-color: #366594; }
-        
-        .guest-btn { background-color: transparent; border: 1px solid #5288c1; color: #5288c1; margin-top: 10px; }
-        .guest-btn:hover { background-color: rgba(82, 136, 193, 0.1); }
-        
-        .switch-mode { margin-top: 20px; font-size: 14px; color: #7f91a4; }
-        .switch-mode a { color: #5288c1; text-decoration: none; font-weight: bold; }
-        
-        .error-msg { color: #ef5b5b; font-size: 14px; margin-top: 10px; display: none; background: rgba(239, 91, 91, 0.1); padding: 8px; border-radius: 6px; }
-        .lock-banner { background-color: #ef5b5b; color: white; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0f0f1a; color: #e0e0e0; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-container { width: 100%; max-width: 420px; background: #161625; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
+        h1 { color: #4a90e2; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 12px; background: #252538; border: 1px solid #3a3a55; border-radius: 6px; color: white; box-sizing: border-box; font-size: 1rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; margin-top: 10px; }
+        .btn-primary { background-color: #4a90e2; color: white; }
+        .btn-primary:hover { background-color: #357abd; }
+        .btn-secondary { background-color: #2b2b3d; color: #bbb; }
+        .btn-secondary:hover { background-color: #3a3a55; }
+        .btn-success { background-color: #5cb85c; color: white; }
+        .toggle-link { margin-top: 15px; display: inline-block; color: #4a90e2; text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+        .lock-banner { background: #3d1418; border: 2px solid #ff4a4a; color: #ff8888; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4; }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <h2>JEmail System</h2>
-        <p class="subtitle">Поштова система у стилі Telegram</p>
+<div class="auth-container">
+    <h1>JEmail ✉️</h1>
 
-        {% if locked %}
-        <div class="lock-banner">🔒 СИСТЕМА ЗАБЛОКОВАНА АДМІНІСТРАТОРОМ</div>
-        <div id="unlockForm">
-            <div class="form-group">
-                <label>Пароль Адміністратора</label>
-                <input type="password" id="adminLockPassword" placeholder="Введіть код адміна...">
-            </div>
-            <button class="btn" onclick="unlockSystem()">Розблокувати</button>
-            <div class="error-msg" id="lockError"></div>
+    {% if locked %}
+    <!-- КРАСИВИЙ ЕКРАН БЛОКУВАННЯ, ЯКИЙ ТИ ПРОСИВ -->
+    <div class="lock-banner">
+        🛑 <strong>Зачекайте, будь ласка, йде оновлення системи — технічна перерва.</strong>
+        <hr style="border: 0; border-top: 1px solid #ff4a4a; margin: 10px 0;">
+        <p style="font-size: 0.85rem; color: #ccc; margin: 0 0 10px 0;">🔓 Вхід для адміністратора:</p>
+        <input type="password" id="admin-unlock-pass" placeholder="Введіть код адміна" style="width: 100%; padding: 8px; background: #221215; border: 1px solid #ff4a4a; color: white; border-radius: 4px; box-sizing: border-box; text-align: center;">
+        <button onclick="unlockSystemFromForm()" class="btn btn-success" style="padding: 8px; font-size: 0.9rem; margin-top: 8px;">Відкрити систему</button>
+    </div>
+    {% endif %}
+
+    <div id="login-form">
+        <h3>Вхід у систему</h3>
+        <div class="form-group">
+            <label>Логін або Email</label>
+            <input type="text" id="login-username" placeholder="admin або ваш логін">
         </div>
-        {% else %}
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" id="login-password" placeholder="Ваш пароль">
+        </div>
+        <button onclick="handleLogin()" class="btn btn-primary">Увійти</button>
         
-        <!-- Форма Входу -->
-        <div id="loginForm">
-            <div class="form-group">
-                <label>Логін</label>
-                <input type="text" id="loginUser" placeholder="Введіть свій логін...">
-            </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" id="loginPass" placeholder="Введіть свій пароль...">
-            </div>
-            <button class="btn" onclick="handleLogin()">Увійти</button>
-            <button class="btn guest-btn" onclick="handleGuestLogin()">👤 Увійти як гість (3 дні)</button>
-            <div class="switch-mode">
-                Немає акаунту? <a href="#" onclick="toggleMode('reg')">Зареєструватися</a>
-            </div>
-        </div>
-
-        <!-- Форма Реєстрації -->
-        <div id="registerForm" style="display: none;">
-            <div class="form-group">
-                <label>Придумайте логін</label>
-                <input type="text" id="regUser" placeholder="Мінімум 3 символи...">
-            </div>
-            <div class="form-group">
-                <label>Ваш Email</label>
-                <input type="email" id="regEmail" placeholder="example@mail.com...">
-            </div>
-            <div class="form-group">
-                <label>Придумайте пароль</label>
-                <input type="password" id="regPass" placeholder="Мінімум 9 символів, без 123...">
-            </div>
-            <button class="btn" onclick="handleRegister()">Створити акаунт</button>
-            <div class="switch-mode">
-                Вже є акаунт? <a href="#" onclick="toggleMode('login')">Увійти</a>
-            </div>
-        </div>
-
-        <div class="error-msg" id="errorBlock"></div>
+        {% if not locked %}
+        <button onclick="handleGuestLogin()" class="btn btn-secondary">Увійти як Гість 👤</button>
+        <span class="toggle-link" onclick="switchForm('register')">Створити акаунт</span>
         {% endif %}
     </div>
 
-    <script>
-        function toggleMode(mode) {
-            const errorBlock = document.getElementById('errorBlock');
-            if(errorBlock) errorBlock.style.display = 'none';
-            
-            if(mode === 'reg') {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('registerForm').style.display = 'block';
-            } else {
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('registerForm').style.display = 'none';
-            }
-        }
+    <div id="register-form" style="display: none;">
+        <h3>Реєстрація</h3>
+        <div class="form-group">
+            <label>Логін</label>
+            <input type="text" id="reg-username">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="reg-email">
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" id="reg-password">
+        </div>
+        <button onclick="handleRegister()" class="btn btn-primary">Зареєструватися</button>
+        <span class="toggle-link" onclick="switchForm('login')">Вже є акаунт? Увійти</span>
+    </div>
+</div>
 
-        function showError(msg) {
-            const err = document.getElementById('errorBlock');
-            err.innerText = msg;
-            err.style.display = 'block';
-        }
+<script>
+function switchForm(type) {
+    document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('register-form').style.display = type === 'register' ? 'block' : 'none';
+}
 
-        async function handleLogin() {
-            let username = document.getElementById('loginUser').value;
-            let password = document.getElementById('loginPass').value;
-            if(!username || !password) return showError('Заповніть усі поля!');
+function handleLogin() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    }).then(res => res.json()).then(data => {
+        if(data.success) window.location.href = '/';
+        else alert(data.error);
+    });
+}
 
-            let res = await fetch('/api/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password})
-            });
-            let data = await res.json();
-            if(data.success) {
-                window.location.reload();
-            } else {
-                showError(data.error);
-            }
-        }
+function unlockSystemFromForm() {
+    const password = document.getElementById('admin-unlock-pass').value;
+    fetch('/api/admin/toggle_system', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lock: false, password: password })
+    }).then(res => res.json()).then(data => {
+        if(data.success) { alert('Систему відкрито!'); window.location.reload(); }
+        else alert(data.error);
+    });
+}
 
-        async function handleRegister() {
-            let username = document.getElementById('regUser').value;
-            let email = document.getElementById('regEmail').value;
-            let password = document.getElementById('regPass').value;
-            if(!username || !email || !password) return showError('Заповніть усі поля!');
+function handleRegister() {
+    const username = document.getElementById('reg-username').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value.trim();
+    fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+    }).then(res => res.json()).then(data => {
+        if(data.success) { alert('Успіх!'); switchForm('login'); }
+        else alert(data.error);
+    });
+}
 
-            let res = await fetch('/api/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, email, password})
-            });
-            let data = await res.json();
-            if(data.success) {
-                alert('Реєстрація успішна! Тепер увійдіть.');
-                toggleMode('login');
-            } else {
-                showError(data.error);
-            }
-        }
-
-        async function handleGuestLogin() {
-            if(confirm('Увага: Гостьовий акаунт діє 3 дні, після чого видаляється. Гостям заборонено надсилати посилання. Продовжити?')) {
-                let res = await fetch('/api/guest_login', { method: 'POST' });
-                let data = await res.json();
-                if(data.success) window.location.reload();
-            }
-        }
-
-        async function unlockSystem() {
-            let password = document.getElementById('adminLockPassword').value;
-            let res = await fetch('/api/admin/unlock', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({password})
-            });
-            let data = await res.json();
-            if(data.success) {
-                window.location.reload();
-            } else {
-                const lockErr = document.getElementById('lockError');
-                lockErr.innerText = data.error;
-                lockErr.style.display = 'block';
-            }
-        }
-    </script>
+function handleGuestLogin() {
+    fetch('/api/guest_login', { method: 'POST' }).then(res => res.json()).then(data => {
+        if(data.success) window.location.href = '/';
+    });
+}
+</script>
 </body>
 </html>
