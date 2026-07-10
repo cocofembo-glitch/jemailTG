@@ -3,193 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEmail Web</title>
+    <title>JEmail - Головна</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #182533; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f1a;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #161625;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2a2a40;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 { color: #4a90e2; margin: 0; }
+        .user-info { font-size: 0.95rem; color: #aaa; }
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-danger { background-color: #d9534f; color: white; }
+        .btn-danger:hover { background-color: #c9302c; }
+        .btn-primary { background-color: #4a90e2; color: white; }
+        .btn-primary:hover { background-color: #357abd; }
+        .btn-success { background-color: #5cb85c; color: white; }
+        .btn-success:hover { background-color: #4cae4c; }
+        .btn-warning { background-color: #f0ad4e; color: white; }
+        .btn-warning:hover { background-color: #ec971f; }
         
-        /* Ліве меню (Чати) */
-        .sidebar { width: 350px; background-color: #17212b; border-right: 1px solid #101921; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #101921; display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-header h2 { font-size: 20px; color: #5288c1; }
-        .logout-btn { color: #ef5b5b; text-decoration: none; font-weight: bold; font-size: 14px; }
-        .chat-list { flex: 1; overflow-y: auto; }
-        .chat-item { padding: 15px 20px; display: flex; align-items: center; cursor: pointer; border-bottom: 1px solid #101921; transition: 0.2s; }
-        .chat-item:hover { background-color: #202b36; }
-        .chat-avatar { width: 45px; height: 45px; background-color: #2b5278; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; font-size: 18px; color: #fff; }
-        .chat-info { flex: 1; }
-        .chat-info-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .chat-name { font-weight: bold; font-size: 15px; }
-        .chat-time { color: #7f91a4; font-size: 12px; }
-        .chat-subj { color: #7f91a4; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 220px; }
+        .email-form {
+            background: #1e1e30;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .form-group { margin-bottom: 12px; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: #252538;
+            border: 1px solid #3a3a55;
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box;
+        }
+        .email-list { margin-top: 20px; }
+        .email-item {
+            background: #1e1e30;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4a90e2;
+        }
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        .email-subject { font-weight: bold; color: #fff; margin-bottom: 5px; }
+        .email-body { white-space: pre-wrap; font-size: 0.95rem; }
 
-        /* Права частина (Переписка) */
-        .main-chat { flex: 1; background-color: #0e1621; display: flex; flex-direction: column; position: relative; }
-        .chat-header { background-color: #17212b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #101921; }
-        .message-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        
-        /* Бульбашки повідомлень */
-        .msg { max-width: 60%; padding: 10px 15px; border-radius: 12px; position: relative; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
-        .msg.in { background-color: #182533; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .msg.out { background-color: #2b5278; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-meta { display: flex; justify-content: flex-end; font-size: 11px; color: #7f91a4; margin-top: 5px; }
-        
-        /* Поле вводу */
-        .input-area { background-color: #17212b; padding: 15px; display: flex; gap: 10px; align-items: center; }
-        .input-area input, .input-area textarea { flex: 1; background-color: #24313f; border: none; padding: 12px; border-radius: 8px; color: #fff; outline: none; resize: none; font-size: 15px; }
-        .send-btn { background-color: #2b5278; border: none; color: white; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
-        .send-btn:hover { background-color: #366594; }
-
-        /* Кнопка нового листа */
-        .new-msg-btn { background-color: #2b5278; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; font-size: 14px; border-bottom: 1px solid #101921; transition: 0.2s; }
-        .new-msg-btn:hover { background-color: #366594; }
-        
-        .welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #7f91a4; }
-        .welcome-screen span { background: #17212b; padding: 8px 16px; border-radius: 20px; font-size: 14px; }
+        /* Стилі для адмінки */
+        .admin-section {
+            background: #221215;
+            border: 2px solid #ff4a4a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .admin-box {
+            background: #2d191c;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        .admin-input {
+            padding: 10px;
+            background: #3d2428;
+            border: 1px solid #633339;
+            border-radius: 6px;
+            color: white;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Бокове меню чатів -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>JEmail {% if is_guest %}(Гість){% endif %}</h2>
-            <a href="/api/logout" class="logout-btn">Вийти</a>
+<div class="container">
+    <!-- Шапка сайту -->
+    <div class="header">
+        <div>
+            <h1>JEmail ✉️</h1>
+            <div class="user-info">
+                Ви увійшли як: <strong>{{ user }}</strong> 
+                {% if is_guest %}<span style="color: #f0ad4e;">(Гість)</span>{% endif %}
+                {% if is_admin %}<span style="color: #ff4a4a;">(Адміністратор)</span>{% endif %}
+            </div>
         </div>
-        {% if not is_guest %}
-        <button class="new-msg-btn" onclick="openNewMessageModal()">📝 Написати листа</button>
-        {% else %}
-        <button class="new-msg-btn" onclick="openNewMessageModal()">📝 Написати листа (Без посилань)</button>
-        {% endif %}
-        <div class="chat-list" id="chatList">
-            <!-- Сюди скрипт підвантажить листи -->
-        </div>
+        <a href="/api/logout" class="btn btn-danger">Вийти з акаунту</a>
     </div>
 
-    <!-- Вікно чату -->
-    <div class="main-chat">
-        <div id="chatContent" style="display: none; height: 100%; flex-direction: column;">
-            <div class="chat-header">
-                <div class="chat-avatar" id="activeAvatar">U</div>
-                <div>
-                    <div class="chat-name" id="activeChatName">Користувач</div>
-                    <div class="chat-time" id="activeChatSubj">Тема</div>
-                </div>
-            </div>
-            <div class="message-area" id="messageArea">
-                <!-- Сюди падають повідомлення -->
-            </div>
+    <!-- Форма відправки листа -->
+    <div class="email-form">
+        <h3 style="margin-top: 0; color: #4a90e2;">Написати нового листа</h3>
+        <div class="form-group">
+            <input type="text" id="to_user" placeholder="Кому (Логін отримувача)">
         </div>
+        <div class="form-group">
+            <input type="text" id="subject" placeholder="Тема листа">
+        </div>
+        <div class="form-group">
+            <textarea id="message" rows="4" placeholder="Текст вашого повідомлення..."></textarea>
+        </div>
+        <button onclick="sendEmail()" class="btn btn-primary">Надіслати лист</button>
+    </div>
+
+    <!-- Список листів -->
+    <div class="email-list">
+        <h3 style="border-bottom: 1px solid #2a2a40; padding-bottom: 5px;">Ваша поштова скринька</h3>
+        <div id="emails_container">Завантаження листів...</div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- АВТОМАТИЧНА АДМІН-ПАНЕЛЬ (Видима ТІЛЬКИ для адміна) -->
+    <!-- ==================================================== -->
+    {% if is_admin %}
+    <div class="admin-section">
+        <h2 style="color: #ff4a4a; margin-top: 0; display: flex; align-items: center; gap: 10px;">🛠️ АДМІНІСТРУВАННЯ JEMAIL</h2>
+        <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">Оскільки ви зайшли як адмін, вам доступні функції керування сервером прямо звідси.</p>
         
-        <div class="welcome-screen" id="welcomeScreen">
-            <span>Виберіть лист, щоб прочитати його</span>
+        <!-- Блок блокування системи -->
+        <div class="admin-box">
+            <h4 style="margin-top: 0; color: #f0ad4e;">🔒 Статус системи (Блокування сайту)</h4>
+            <p style="font-size: 0.85rem; color: #bbb;">Закриває реєстрацію та вхід для всіх звичайних користувачів та гостей.</p>
+            <button onclick="toggleSystem(true)" class="btn btn-danger" style="margin-right: 10px;">🔴 Закрити систему</button>
+            <button onclick="toggleSystem(false)" class="btn btn-success">🟢 Відкрити систему</button>
         </div>
 
-        <!-- Зона вводу/створення листа -->
-        <div class="input-area" id="inputArea" style="display: none;">
-            <input type="text" id="targetUser" placeholder="Кому (логін)..." style="max-width: 150px; display: none;">
-            <input type="text" id="emailSubject" placeholder="Тема листа..." style="max-width: 200px; display: none;">
-            <textarea id="messageText" rows="1" placeholder="Введіть текст листа..."></textarea>
-            <button class="send-btn" onclick="sendMessage()">Надіслати</button>
+        <!-- Блок банів -->
+        <div class="admin-box">
+            <h4 style="margin-top: 0; color: #f0ad4e;">🔨 Управління користувачами (Бани)</h4>
+            <p style="font-size: 0.85rem; color: #bbb;">Введіть точний логін користувача, якого потрібно заблокувати в базі даних.</p>
+            <input type="text" id="ban-username" class="admin-input" placeholder="Нікнейм юзера">
+            <input type="text" id="ban-reason" class="admin-input" placeholder="Причина бану (наприклад: Спам)" style="width: 250px;">
+            <br>
+            <button onclick="banUser(true)" class="btn btn-danger" style="margin-right: 10px;">Забанити</button>
+            <button onclick="banUser(false)" class="btn btn-warning">Розбанити</button>
         </div>
     </div>
+    {% endif %}
 
-    <script>
-        let currentUserId = "{{ user }}";
-        let allEmails = [];
+</div>
 
-        async function loadEmails() {
-            let res = await fetch('/api/emails');
-            allEmails = await res.json();
-            let html = '';
-            
-            allEmails.forEach((email) => {
-                let partner = email.from === currentUserId ? email.to : email.from;
-                let initial = partner.charAt(0).toUpperCase();
-                html += `
-                    <div class="chat-item" onclick="openEmail(${email.id})">
-                        <div class="chat-avatar">${initial}</div>
-                        <div class="chat-info">
-                            <div class="chat-info-top">
-                                <span class="chat-name">${partner}</span>
-                                <span class="chat-time">${email.timestamp}</span>
-                            </div>
-                            <div class="chat-subj"><b>${email.subject}</b> - ${email.message}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('chatList').innerHTML = html;
+<script>
+// Функція завантаження листів
+function loadEmails() {
+    fetch('/api/emails')
+    .then(res => res.json())
+    .then(emails => {
+        const container = document.getElementById('emails_container');
+        if (emails.length === 0) {
+            container.innerHTML = '<p style="color: #666; text-align: center;">Листів поки немає</p>';
+            return;
         }
-
-        function openEmail(id) {
-            let email = allEmails.find(e => e.id === id);
-            if(!email) return;
-
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('chatContent').style.display = 'flex';
-            document.getElementById('inputArea').style.display = 'flex';
+        container.innerHTML = '';
+        emails.forEach(email => {
+            const item = document.createElement('div');
+            item.className = 'email-item';
             
-            let partner = email.from === currentUserId ? email.to : email.from;
-            document.getElementById('activeChatName').innerText = partner;
-            document.getElementById('activeChatSubj').innerText = "Тема: " + email.subject;
-            document.getElementById('activeAvatar').innerText = partner.charAt(0).toUpperCase();
-
-            // Ховаємо поля створення, бо ми просто відповідаємо в чат
-            document.getElementById('targetUser').style.display = 'none';
-            document.getElementById('emailSubject').style.display = 'none';
-            document.getElementById('targetUser').value = partner;
-            document.getElementById('emailSubject').value = "Re: " + email.subject;
-
-            let typeClass = email.from === currentUserId ? 'out' : 'in';
-            document.getElementById('messageArea').innerHTML = `
-                <div class="msg ${typeClass}">
-                    <div>${email.message.replace(/\n/g, '<br>')}</div>
-                    <div class="msg-meta"><span>${email.timestamp}</span></div>
+            // Якщо адмін — показуємо хто кому писав, щоб було зрозуміло
+            let directionText = `Від: ${email.from} | Кому: ${email.to}`;
+            
+            item.innerHTML = `
+                <div class="email-header">
+                    <span>${directionText}</span>
+                    <span>${email.timestamp}</span>
                 </div>
+                <div class="email-subject">${email.subject}</div>
+                <div class="email-body">${email.message}</div>
             `;
+            container.appendChild(item);
+        });
+    });
+}
+
+// Функція відправки листа
+function sendEmail() {
+    const to = document.getElementById('to_user').value.strip ? document.getElementById('to_user').value.strip() : document.getElementById('to_user').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+
+    if(!to || !subject || !message) {
+        alert('Заповніть усі поля листа!');
+        return;
+    }
+
+    fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to, subject, message })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            alert('Лист успішно надіслано! 🚀');
+            document.getElementById('to_user').value = '';
+            document.getElementById('subject').value = '';
+            document.getElementById('message').value = '';
+            loadEmails();
+        } else {
+            alert('Помилка: ' + data.error);
         }
+    });
+}
 
-        function openNewMessageModal() {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('chatContent').style.display = 'flex';
-            document.getElementById('inputArea').style.display = 'flex';
-            
-            document.getElementById('activeChatName').innerText = "Новий лист";
-            document.getElementById('activeChatSubj').innerText = "Заповніть поля знизу";
-            document.getElementById('messageArea').innerHTML = '';
-            
-            document.getElementById('targetUser').style.display = 'block';
-            document.getElementById('emailSubject').style.display = 'block';
-            document.getElementById('targetUser').value = '';
-            document.getElementById('emailSubject').value = '';
+// Адмінські функції (працюють тільки якщо юзер адмін)
+function toggleSystem(shouldLock) {
+    fetch('/api/admin/toggle_system', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lock: shouldLock })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) alert(data.message);
+        else alert('Помилка: ' + data.error);
+    });
+}
+
+function banUser(shouldBlock) {
+    const username = document.getElementById('ban-username').value;
+    const reason = document.getElementById('ban-reason').value;
+    
+    if(!username) { alert('Введіть нікнейм користувача!'); return; }
+
+    fetch('/api/admin/block_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username, block: shouldBlock, reason: reason })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            alert(data.message);
+            document.getElementById('ban-username').value = '';
+            document.getElementById('ban-reason').value = '';
+        } else {
+            alert('Помилка: ' + data.error);
         }
+    });
+}
 
-        async function sendMessage() {
-            let to = document.getElementById('targetUser').value;
-            let subject = document.getElementById('emailSubject').value;
-            let message = document.getElementById('messageText').value;
+// Запуск завантаження при відкритті сторінки
+loadEmails();
+// Оновлювати пошту кожні 10 секунд
+setInterval(loadEmails, 10000);
+</script>
 
-            if(!to || !subject || !message) return alert('Заповніть усі поля!');
-
-            let res = await fetch('/api/send', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({to, subject, message})
-            });
-            let data = await res.json();
-            if(data.success) {
-                document.getElementById('messageText').value = '';
-                loadEmails();
-                alert('Лист успішно надіслано!');
-            } else {
-                alert(data.error || 'Помилка відправки');
-            }
-        }
-
-        // Початкове завантаження
-        loadEmails();
-        setInterval(loadEmails, 5000); // Оновлення кожні 5 секунд
-    </script>
 </body>
 </html>
