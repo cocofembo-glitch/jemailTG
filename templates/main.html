@@ -5,284 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JEmail - Головна</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f0f1a;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: #161625;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #2a2a40;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0f0f1a; color: #e0e0e0; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 800px; background: #161625; padding: 20px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2a2a40; padding-bottom: 15px; margin-bottom: 20px; }
         h1 { color: #4a90e2; margin: 0; }
-        .user-info { font-size: 0.95rem; color: #aaa; }
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; text-decoration: none; display: inline-block; }
         .btn-danger { background-color: #d9534f; color: white; }
-        .btn-danger:hover { background-color: #c9302c; }
         .btn-primary { background-color: #4a90e2; color: white; }
-        .btn-primary:hover { background-color: #357abd; }
         .btn-success { background-color: #5cb85c; color: white; }
-        .btn-success:hover { background-color: #4cae4c; }
         .btn-warning { background-color: #f0ad4e; color: white; }
-        .btn-warning:hover { background-color: #ec971f; }
-        
-        .email-form {
-            background: #1e1e30;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
+        .email-form { background: #1e1e30; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
         .form-group { margin-bottom: 12px; }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            background: #252538;
-            border: 1px solid #3a3a55;
-            border-radius: 6px;
-            color: white;
-            box-sizing: border-box;
-        }
-        .email-list { margin-top: 20px; }
-        .email-item {
-            background: #1e1e30;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #4a90e2;
-        }
-        .email-header {
-            display: flex;
-            justify-content: space-between;
-            color: #888;
-            font-size: 0.85rem;
-            margin-bottom: 5px;
-        }
-        .email-subject { font-weight: bold; color: #fff; margin-bottom: 5px; }
-        .email-body { white-space: pre-wrap; font-size: 0.95rem; }
-
-        /* Стилі для адмінки */
-        .admin-section {
-            background: #221215;
-            border: 2px solid #ff4a4a;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-        }
-        .admin-box {
-            background: #2d191c;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-        }
-        .admin-input {
-            padding: 10px;
-            background: #3d2428;
-            border: 1px solid #633339;
-            border-radius: 6px;
-            color: white;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; background: #252538; border: 1px solid #3a3a55; border-radius: 6px; color: white; box-sizing: border-box; }
+        .email-item { background: #1e1e30; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #4a90e2; }
+        .email-header { display: flex; justify-content: space-between; color: #888; font-size: 0.85rem; }
+        .email-subject { font-weight: bold; color: #fff; margin: 5px 0; }
+        
+        /* Стилі адмінки */
+        .admin-section { background: #1e1114; border: 2px solid #ff4a4a; padding: 20px; border-radius: 10px; margin-top: 30px; }
+        .admin-box { background: #2a181b; padding: 15px; border-radius: 6px; margin-top: 15px; }
+        .admin-input { padding: 10px; background: #382024; border: 1px solid #5e3036; border-radius: 6px; color: white; margin-right: 10px; }
+        .mod-item { background: #381a1f; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px dashed #ff4a4a; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Шапка сайту -->
     <div class="header">
         <div>
             <h1>JEmail ✉️</h1>
-            <div class="user-info">
-                Ви увійшли як: <strong>{{ user }}</strong> 
-                {% if is_guest %}<span style="color: #f0ad4e;">(Гість)</span>{% endif %}
-                {% if is_admin %}<span style="color: #ff4a4a;">(Адміністратор)</span>{% endif %}
-            </div>
+            <div style="color: #aaa; font-size: 0.95rem;">Ви увійшли як: <strong>{{ user }}</strong> {% if is_admin %}<span style="color:#ff4a4a;">(Адмін)</span>{% endif %}</div>
         </div>
-        <a href="/api/logout" class="btn btn-danger">Вийти з акаунту</a>
+        <a href="/api/logout" class="btn btn-danger">Вийти</a>
     </div>
 
-    <!-- Форма відправки листа -->
     <div class="email-form">
-        <h3 style="margin-top: 0; color: #4a90e2;">Написати нового листа</h3>
-        <div class="form-group">
-            <input type="text" id="to_user" placeholder="Кому (Логін отримувача)">
-        </div>
-        <div class="form-group">
-            <input type="text" id="subject" placeholder="Тема листа">
-        </div>
-        <div class="form-group">
-            <textarea id="message" rows="4" placeholder="Текст вашого повідомлення..."></textarea>
-        </div>
-        <button onclick="sendEmail()" class="btn btn-primary">Надіслати лист</button>
+        <h3 style="margin-top: 0; color: #4a90e2;">Написати листа</h3>
+        <div class="form-group"><input type="text" id="to_user" placeholder="Кому (Логін отримувача)"></div>
+        <div class="form-group"><input type="text" id="subject" placeholder="Тема"></div>
+        <div class="form-group"><textarea id="message" rows="4" placeholder="Текст листа... Посилання перевіряються адміном!"></textarea></div>
+        <button onclick="sendEmail()" class="btn btn-primary">Надіслати</button>
     </div>
 
-    <!-- Список листів -->
-    <div class="email-list">
-        <h3 style="border-bottom: 1px solid #2a2a40; padding-bottom: 5px;">Ваша поштова скринька</h3>
+    <div>
+        <h3>Поштова скринька</h3>
         <div id="emails_container">Завантаження листів...</div>
     </div>
 
-    <!-- ==================================================== -->
-    <!-- АВТОМАТИЧНА АДМІН-ПАНЕЛЬ (Видима ТІЛЬКИ для адміна) -->
-    <!-- ==================================================== -->
+    <!-- АДМІН-ПАНЕЛЬ -->
     {% if is_admin %}
     <div class="admin-section">
-        <h2 style="color: #ff4a4a; margin-top: 0; display: flex; align-items: center; gap: 10px;">🛠️ АДМІНІСТРУВАННЯ JEMAIL</h2>
-        <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">Оскільки ви зайшли як адмін, вам доступні функції керування сервером прямо звідси.</p>
-        
-        <!-- Блок блокування системи -->
+        <h2 style="color: #ff4a4a; margin-top: 0;">🛠️ АДМІНІСТРУВАННЯ JEMAIL</h2>
+
+        <!-- НОВА МОДЕРАЦІЯ ПОСИЛАНЬ -->
         <div class="admin-box">
-            <h4 style="margin-top: 0; color: #f0ad4e;">🔒 Статус системи (Блокування сайту)</h4>
-            <p style="font-size: 0.85rem; color: #bbb;">Закриває реєстрацію та вхід для всіх звичайних користувачів та гостей.</p>
-            <button onclick="toggleSystem(true)" class="btn btn-danger" style="margin-right: 10px;">🔴 Закрити систему</button>
+            <h4 style="margin-top: 0; color: #ff4a4a;">📋 Листи на модерації (Тут з'являються листи з посиланнями)</h4>
+            <div id="moderation_container" style="color: #ccc; font-size: 0.9rem;">Немає листів на перевірку.</div>
+        </div>
+
+        <div class="admin-box">
+            <h4 style="margin-top: 0; color: #f0ad4e;">🔒 Status системи</h4>
+            <button onclick="toggleSystem(true)" class="btn btn-danger">🔴 Закрити систему (Перерва)</button>
             <button onclick="toggleSystem(false)" class="btn btn-success">🟢 Відкрити систему</button>
         </div>
 
-        <!-- Блок банів -->
         <div class="admin-box">
-            <h4 style="margin-top: 0; color: #f0ad4e;">🔨 Управління користувачами (Бани)</h4>
-            <p style="font-size: 0.85rem; color: #bbb;">Введіть точний логін користувача, якого потрібно заблокувати в базі даних.</p>
-            <input type="text" id="ban-username" class="admin-input" placeholder="Нікнейм юзера">
-            <input type="text" id="ban-reason" class="admin-input" placeholder="Причина бану (наприклад: Спам)" style="width: 250px;">
-            <br>
-            <button onclick="banUser(true)" class="btn btn-danger" style="margin-right: 10px;">Забанити</button>
+            <h4 style="margin-top: 0; color: #f0ad4e;">🔨 Бани</h4>
+            <input type="text" id="ban-username" class="admin-input" placeholder="Нік користувача">
+            <input type="text" id="ban-reason" class="admin-input" placeholder="Причина">
+            <button onclick="banUser(true)" class="btn btn-danger">Забанити</button>
             <button onclick="banUser(false)" class="btn btn-warning">Розбанити</button>
+        </div>
+
+        <!-- АДМІНСЬКІ ПРИКОЛИ -->
+        <div class="admin-box" style="border-top: 1px solid #ff4a4a; margin-top: 20px;">
+            <h4 style="margin-top: 0; color: #ff4a4a;">🦊 Адмінські приколи</h4>
+            <label style="cursor: pointer;">
+                <input type="checkbox" id="troll-checkbox" onchange="toggleTrollMode(this.checked)"> Увімкнути «Режим Троля» (міняє ніки юзерів на клоунів і обмежує гостей)
+            </label>
         </div>
     </div>
     {% endif %}
-
 </div>
 
 <script>
-// Функція завантаження листів
 function loadEmails() {
-    fetch('/api/emails')
-    .then(res => res.json())
-    .then(emails => {
-        const container = document.getElementById('emails_container');
-        if (emails.length === 0) {
-            container.innerHTML = '<p style="color: #666; text-align: center;">Листів поки немає</p>';
-            return;
-        }
-        container.innerHTML = '';
-        emails.forEach(email => {
-            const item = document.createElement('div');
-            item.className = 'email-item';
-            
-            // Якщо адмін — показуємо хто кому писав, щоб було зрозуміло
-            let directionText = `Від: ${email.from} | Кому: ${email.to}`;
-            
-            item.innerHTML = `
-                <div class="email-header">
-                    <span>${directionText}</span>
-                    <span>${email.timestamp}</span>
-                </div>
-                <div class="email-subject">${email.subject}</div>
-                <div class="email-body">${email.message}</div>
-            `;
-            container.appendChild(item);
+    fetch('/api/emails').then(res => res.json()).then(emails => {
+        const c = document.getElementById('emails_container');
+        if(emails.length === 0) { c.innerHTML = '<p style="color:#666;">Листів немає</p>'; return; }
+        c.innerHTML = '';
+        emails.forEach(e => {
+            c.innerHTML += `<div class="email-item"><div class="email-header"><span>Від: ${e.from} | Кому: ${e.to}</span><span>${e.timestamp}</span></div><div class="email-subject">${e.subject}</div><div style="white-space:pre-wrap;">${e.message}</div></div>`;
         });
     });
 }
 
-// Функція відправки листа
 function sendEmail() {
-    const to = document.getElementById('to_user').value.strip ? document.getElementById('to_user').value.strip() : document.getElementById('to_user').value;
+    const to = document.getElementById('to_user').value.trim();
     const subject = document.getElementById('subject').value;
     const message = document.getElementById('message').value;
-
-    if(!to || !subject || !message) {
-        alert('Заповніть усі поля листа!');
-        return;
-    }
-
+    if(!to || !subject || !message) { alert('Заповніть поля!'); return; }
+    
     fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ to, subject, message })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            alert('Лист успішно надіслано! 🚀');
-            document.getElementById('to_user').value = '';
-            document.getElementById('subject').value = '';
-            document.getElementById('message').value = '';
-            loadEmails();
-        } else {
-            alert('Помилка: ' + data.error);
-        }
+    }).then(res => res.json()).then(data => {
+        alert(data.message || 'Лист надіслано!');
+        document.getElementById('to_user').value = '';
+        document.getElementById('subject').value = '';
+        document.getElementById('message').value = '';
+        loadEmails();
     });
 }
 
-// Адмінські функції (працюють тільки якщо юзер адмін)
+{% if is_admin %}
+function loadAdminData() {
+    fetch('/api/admin/data').then(res => res.json()).then(data => {
+        document.getElementById('troll-checkbox').checked = data.troll_mode;
+        const mc = document.getElementById('moderation_container');
+        if(!data.moderation_list || data.moderation_list.length === 0) {
+            mc.innerHTML = 'Ніхто зараз не шле підозрілих посилань.';
+            return;
+        }
+        mc.innerHTML = '';
+        data.moderation_list.forEach(e => {
+            mc.innerHTML += `
+                <div class="mod-item">
+                    <b>Від:</b> ${e.from} | <b>Кому:</b> ${e.to} <br>
+                    <b>Тема:</b> ${e.subject} <br>
+                    <b>Текст:</b> <span style="color:#ff8888;">${e.message}</span> <br style="margin-bottom:5px;">
+                    <button onclick="moderate(${e.mod_id}, 'approve')" class="btn btn-success" style="padding:4px 10px; font-size:0.8rem; margin-top:5px;">✓ Дозволити</button>
+                    <button onclick="moderate(${e.mod_id}, 'reject')" class="btn btn-danger" style="padding:4px 10px; font-size:0.8rem; margin-top:5px;">❌ Видалити</button>
+                </div>`;
+        });
+    });
+}
+
+function moderate(modId, action) {
+    fetch('/api/admin/moderate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mod_id: modId, action: action })
+    }).then(res => res.json()).then(() => { 
+        loadAdminData(); 
+        loadEmails(); 
+    });
+}
+
 function toggleSystem(shouldLock) {
     fetch('/api/admin/toggle_system', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lock: shouldLock })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) alert(data.message);
-        else alert('Помилка: ' + data.error);
+    }).then(res => res.json()).then(data => alert(data.message));
+}
+
+function toggleTrollMode(checked) {
+    fetch('/api/admin/troll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ troll: checked })
     });
 }
 
-function banUser(shouldBlock) {
+function banUser(block) {
     const username = document.getElementById('ban-username').value;
     const reason = document.getElementById('ban-reason').value;
-    
-    if(!username) { alert('Введіть нікнейм користувача!'); return; }
-
     fetch('/api/admin/block_user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, block: shouldBlock, reason: reason })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            alert(data.message);
-            document.getElementById('ban-username').value = '';
-            document.getElementById('ban-reason').value = '';
-        } else {
-            alert('Помилка: ' + data.error);
-        }
-    });
+        body: JSON.stringify({ username, block, reason })
+    }).then(res => res.json()).then(data => { alert(data.message); loadAdminData(); });
 }
 
-// Запуск завантаження при відкритті сторінки
+// Запускаємо адмінський інтервал тільки якщо це адмін
+setInterval(loadAdminData, 4000);
+loadAdminData();
+{% endif %}
+
+// Завантаження листів працює для всіх користувачів
 loadEmails();
-// Оновлювати пошту кожні 10 секунд
 setInterval(loadEmails, 10000);
 </script>
-
 </body>
 </html>
