@@ -89,17 +89,30 @@ def api_login():
     if system.system_locked:
         return jsonify({'success': False, 'error': 'Система заблокована!'})
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
     
+    # 1. ПЕРЕВІРКА НА АДМІНА (Логін може бути і "admin", і твоя пошта "crocorembo@gmail.com")
+    if username == "admin" or username == system.admin_email:
+        if system.verify_admin_password(password):
+            session['user'] = "admin"
+            session['is_guest'] = False
+            session['is_admin'] = True
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Невірний пароль адміна!'})
+
+    # 2. ПЕРЕВІРКА ДЛЯ ОБИЧНОГО ЧОЛОВІКА (Звичайні користувачі з бази)
     if username in system.users:
         if system.users[username].get('blocked'):
             return jsonify({'success': False, 'error': f"Акаунт заблоковано! Причина: {system.users[username].get('block_reason')}"})
         if system.users[username]['password'] == system.hash_password(password):
             session['user'] = username
             session['is_guest'] = False
+            # Про всяк випадок, якщо звичайний юзер має адмінську пошту
             session['is_admin'] = (system.users[username].get('email') == system.admin_email)
             return jsonify({'success': True})
+            
     return jsonify({'success': False, 'error': 'Невірний логін або пароль!'})
 
 @app.route('/api/register', methods=['POST'])
@@ -111,7 +124,7 @@ def api_register():
     password = data.get('password')
     email = data.get('email')
     
-    if username in system.users or username.startswith('guest_'):
+    if username in system.users or username.startswith('guest_') or username == "admin":
         return jsonify({'success': False, 'error': 'Цей логін уже зайнятий!'})
     
     is_valid, msg = system.validate_password(password)
@@ -166,7 +179,7 @@ def send_email():
     subject = data.get('subject')
     msg_text = data.get('message')
     
-    if to_user not in system.users and not to_user.startswith('guest_'):
+    if to_user not in system.users and not to_user.startswith('guest_') and to_user != "admin":
         return jsonify({'success': False, 'error': 'Отримувача не знайдено!'})
         
     if session.get('is_guest'):
@@ -201,4 +214,6 @@ def admin_unlock():
     return jsonify({'success': False, 'error': 'Невірний пароль адміна!'})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Налаштування порту для Render, щоб він знову не падав
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
