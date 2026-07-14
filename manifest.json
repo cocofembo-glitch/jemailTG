@@ -1,0 +1,17 @@
+{
+  "short_name": "JEmail",
+  "name": "JEmail TG System",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2111/2111646.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#17212b",
+  "theme_color": "#242f3d",
+  "display": "standalone",
+  "orientation": "portrait"
+}
