@@ -52,6 +52,14 @@ def index():
         return render_template('main.html', user=display_user, is_guest=session.get('is_guest', False), is_admin=session.get('is_admin', False))
     return render_template('auth.html', locked=system.system_locked)
 
+# Маршрут для зчитування маніфесту (потрібно для встановлення як додаток)
+@app.route('/manifest.json')
+def manifest():
+    if os.path.exists('manifest.json'):
+        with open('manifest.json', 'r', encoding='utf-8') as f:
+            return jsonify(json.load(f))
+    return jsonify({"error": "Manifest file not found"}), 404
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.json
